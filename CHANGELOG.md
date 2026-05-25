@@ -23,3 +23,7 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
   - Script de verificação automatizada ponta a ponta (`verify_transcription.py`).
   - Guia de inicialização rápida `Anotacoes.txt` cobrindo Windows e macOS.
   - Arquivo `README.md` detalhado.
+
+### Modificado
+- **Rodapé do Frontend**: Adicionada a exibição da versão do aplicativo (`0.1.0`) e a assinatura do usuário (`@PLima`) centralizadas no rodapé do `index.html`.
+
