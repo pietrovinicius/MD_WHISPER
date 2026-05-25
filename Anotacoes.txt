@@ -1,0 +1,70 @@
+Medical Whisper - Instruções de Inicialização do Projeto
+
+Este arquivo contém todas as informações necessárias para configurar e iniciar o projeto Medical Whisper, tanto em sistemas macOS quanto em Windows.
+
+========================================================================
+1. REQUISITOS DO SISTEMA
+========================================================================
+- Python 3.10 ou superior.
+- FFmpeg (necessário para que o Whisper processe arquivos de áudio temporários).
+- Gerenciador de dependências 'uv' (opcional, mas altamente recomendado pela velocidade) ou pip padrão.
+
+Instalação do FFmpeg:
+* macOS (via Homebrew):
+  brew install ffmpeg
+
+* Windows (via Winget ou Chocolatey):
+  winget install Gnu.FFmpeg
+  (Ou faça o download manual no site oficial do FFmpeg e adicione a pasta 'bin' às Variáveis de Ambiente do Sistema).
+
+========================================================================
+2. CONFIGURAÇÃO E INICIALIZAÇÃO - macOS / Linux
+========================================================================
+
+Passo 1: Criar o Ambiente Virtual (venv)
+Na raiz do projeto (MD_WHISPER), execute:
+  uv venv backend/.venv
+  (ou usando python nativo: python3 -m venv backend/.venv)
+
+Passo 2: Instalar as Dependências do Backend
+  uv pip install -r backend/requirements.txt --python backend/.venv/bin/python
+  (ou ativando o venv: source backend/.venv/bin/activate && pip install -r backend/requirements.txt)
+
+Passo 3: Executar o Servidor de Desenvolvimento Django
+  backend/.venv/bin/python backend/manage.py runserver
+  (ou com o venv ativado: python backend/manage.py runserver)
+  O servidor iniciará em http://127.0.0.1:8000/
+
+Passo 4: Executar os Testes Automatizados (Opcional)
+  backend/.venv/bin/pytest backend
+  (ou com o venv ativado: pytest backend)
+
+Passo 5: Abrir o Frontend
+  Abra o arquivo 'frontend/index.html' diretamente em qualquer navegador moderno.
+  Dica: Se usar o VS Code, você pode clicar com o botão direito no arquivo index.html e selecionar "Open with Live Server".
+
+========================================================================
+3. CONFIGURAÇÃO E INICIALIZAÇÃO - Windows
+========================================================================
+
+Passo 1: Criar o Ambiente Virtual (venv)
+No terminal CMD ou PowerShell na raiz do projeto (MD_WHISPER), execute:
+  uv venv backend\.venv
+  (ou usando python nativo: python -m venv backend\.venv)
+
+Passo 2: Instalar as Dependências do Backend
+  uv pip install -r backend\requirements.txt --python backend\.venv\Scripts\python
+  (ou ativando o venv no CMD: backend\.venv\Scripts\activate.bat && pip install -r backend\requirements.txt)
+  (ou ativando o venv no PowerShell: backend\.venv\Scripts\Activate.ps1 && pip install -r backend\requirements.txt)
+
+Passo 3: Executar o Servidor de Desenvolvimento Django
+  backend\.venv\Scripts\python backend\manage.py runserver
+  (ou com o venv ativado: python backend\manage.py runserver)
+  O servidor iniciará em http://127.0.0.1:8000/
+
+Passo 4: Executar os Testes Automatizados (Opcional)
+  backend\.venv\Scripts\pytest backend
+  (ou com o venv ativado: pytest backend)
+
+Passo 5: Abrir o Frontend
+  Abra o arquivo 'frontend\index.html' em seu navegador de preferência.

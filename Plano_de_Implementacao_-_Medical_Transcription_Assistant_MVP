@@ -1,0 +1,100 @@
+# Medical Transcription Assistant MVP Implementation Plan
+
+We will build a Minimum Viable Product (MVP) for a medical transcription assistant. The backend is a Django REST Framework API running OpenAI Whisper locally, and the frontend is a clean, modern, and accessible single-page web interface simulating a doctor's consulting room.
+
+## User Review Required
+
+> [!IMPORTANT]
+> **OpenAI Whisper Local Performance**: Whisper requires significant memory and CPU/GPU resources depending on the model size (`tiny`, `base`, `small`, etc.). We propose using the `tiny` or `base` model by default so that transcription on a local CPU runs quickly. Let us know if you prefer a different default model size.
+
+> [!NOTE]
+> **TDD Workflow**: In accordance with the `@Skills/test-driven-development` guidelines, we will write failing tests for the backend transcription endpoint *before* writing the actual django view/service logic.
+
+## Open Questions
+
+- Should Django serve the frontend template, or should the frontend remain a standalone set of static files (HTML, CSS, JS) that can be run directly (e.g., via Live Server or simple browser double-click)?
+  *We propose keeping them separate in `backend/` and `frontend/` folders, with Django CORS configured, allowing total frontend/backend separation.*
+
+## Proposed Changes
+
+### Component 1: Environment & Dependency Management
+We will use `uv` to manage the virtual environment and dependencies. We will define a `requirements.txt` in the backend.
+
+#### [NEW] [requirements.txt](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/backend/requirements.txt)
+Contains backend dependencies: `django`, `djangorestframework`, `django-cors-headers`, `openai-whisper`, `pytest-django`, `soundfile`, `numpy`.
+
+---
+
+### Component 2: Django Project Initialization
+We will initialize the Django project named `config` and an app named `transcription`.
+
+#### [NEW] [manage.py](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/backend/manage.py)
+Standard Django entry point.
+
+#### [NEW] [settings.py](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/backend/config/settings.py)
+Django configuration, with REST framework setup, CORS headers, temporary file storage setup, and Whisper model settings.
+
+#### [NEW] [urls.py](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/backend/config/urls.py)
+Django root routing, routing `/api/transcribe/` to the transcription app.
+
+#### [NEW] [transcription/apps.py](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/backend/transcription/apps.py)
+Django app configuration.
+
+---
+
+### Component 3: Transcription Service & View (TDD Implementation)
+We will follow TDD. We will first create tests in `transcription/tests/test_views.py`, verify they fail, then implement:
+1. A service layer in `transcription/services.py` to handle the file validation, local saving, and Whisper transcription.
+2. A view in `transcription/views.py` exposing the `/api/transcribe/` endpoint.
+
+#### [NEW] [test_views.py](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/backend/transcription/tests/test_views.py)
+Unit and integration tests testing:
+- Missing audio file parameter.
+- Unsupported file format.
+- Successful transcription returning JSON.
+
+#### [NEW] [services.py](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/backend/transcription/services.py)
+Whisper transcription service encapsulating model loading and audio processing.
+
+#### [NEW] [views.py](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/backend/transcription/views.py)
+DRF view handling the file upload, calling the service, and returning the JSON result.
+
+#### [NEW] [urls.py](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/backend/transcription/urls.py)
+App-level routing for the transcribe endpoint.
+
+---
+
+### Component 4: Web Frontend
+A beautiful, highly accessible single-page application under `frontend/` matching the **Minimal Single Column** pattern and the **Accessible & Ethical** style.
+Colors: Primary `#0891B2`, Secondary `#22D3EE`, CTA `#059669`, Background `#ECFEFF`, Text `#164E63`.
+Features:
+- Micro-interactions (smooth transitions on button hover, pulsing recording state).
+- MediaRecorder API to record audio in real-time.
+- Visual wave or recording status indicator.
+- Fetch API to POST the audio to the Django backend.
+- Accessibility features (keyboard focus outline, aria-labels, WCAG contrast).
+
+#### [NEW] [index.html](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/frontend/index.html)
+Semantic HTML5 document with accessible form controls and result textarea.
+
+#### [NEW] [style.css](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/frontend/style.css)
+Custom Vanilla CSS implementation of the design system with CSS custom properties.
+
+#### [NEW] [app.js](file:///Users/pietrodapenhadelima/Projetos/MD_WHISPER/frontend/app.js)
+Vanilla JS capturing the microphone stream using `MediaRecorder`, handling states (idle, recording, sending, success, error), and updating the UI dynamically.
+
+## Verification Plan
+
+### Automated Tests
+We will run tests using `pytest` inside the Django virtual environment:
+```bash
+pytest backend/transcription/tests/
+```
+
+### Manual Verification
+1. Start the Django development server:
+   ```bash
+   python backend/manage.py runserver
+   ```
+2. Open `frontend/index.html` in a web browser.
+3. Grant microphone permissions, record a short clip, and verify successful transcription display.
